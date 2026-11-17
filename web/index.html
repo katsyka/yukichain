@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YukiChain</title>
+<meta name="description" content="YukiChain — a proof-of-stake L1 built from scratch for the Yuki ecosystem. Explorer, YUKI coin, .yuki names and wallet.">
+<meta name="theme-color" content="#070b14">
+<link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;800&family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css?v=5">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="#/"><img src="logo.svg?v=2" alt="" width="28" height="28"><span>YukiChain</span></a>
+  <nav class="links">
+    <a href="#/explorer" data-nav="explorer">Explorer</a>
+    <a href="#/accounts" data-nav="accounts">Accounts</a>
+    <a href="#/names" data-nav="names">Names</a>
+    <a href="#/wallet" data-nav="wallet">Wallet</a>
+    <a href="/docs">Docs</a>
+  </nav>
+  <form class="nav-search" data-search><input name="q" placeholder="Address, name.yuki, tx or block" autocomplete="off" spellcheck="false"></form>
+  <span class="net"><i></i>testnet</span>
+</header>
+<main id="view"></main>
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div><img src="logo.svg?v=2" alt="" width="22" height="22"> <b>YukiChain</b> · <span id="foot-chain">yuki-testnet-1</span></div>
+    <div class="foot-links"><a href="#/explorer">Explorer</a><a href="#/wallet">Wallet</a><a href="/docs">API docs</a><a href="https://yuki.yukichat.lol">Yuki ecosystem ↗</a></div>
+  </div>
+</footer>
+<div id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tweetnacl/1.0.3/nacl-fast.min.js"></script>
+<script src="app.js?v=6"></script>
+</body>
+</html>

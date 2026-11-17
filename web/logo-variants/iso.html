@@ -1,0 +1,14 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>YukiChain Iso-Y variants</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&family=Onest:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#080b10;color:#eaf0f4;font:15px Onest,sans-serif;padding:32px 16px}h1{font:700 22px Unbounded;margin:0 0 24px}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;max-width:1300px}
+.c{background:#0c1016;border:1px solid #18202c;border-radius:16px;padding:20px}.c h2{font:700 14px Unbounded;margin:0 0 4px}.c p{color:#7c8995;margin:0 0 16px;font-size:13px}
+.big{display:flex;gap:20px;align-items:end}.lt{background:#eaf0f4;border-radius:10px;padding:10px}
+.nav{display:flex;align-items:center;gap:10px;font:700 17px Unbounded;letter-spacing:-.02em;margin-top:16px;padding:12px;background:#080b10;border-radius:10px}
+.fav{display:flex;gap:10px;align-items:center;margin-top:12px;color:#7c8995;font-size:12px}</style></head><body>
+<h1>YukiChain — Iso-Y variants</h1><div class="g" id="g"></div>
+<script>
+const V=[['a-iso-y','A1 · Original','As before.'],['a2-node','A2 · Node','Orange hub at the centre, like a validator node.'],['a3-split','A3 · Split edges','Outline broken at the corners into six links.'],['a4-topface','A4 · Lit top','Faint orange top face gives depth.'],['a5-inverse','A5 · Inverse','Orange cube, white Y.'],['a6-bold','A6 · Heavy','Thicker strokes, best at favicon size.'],['a7-thin','A7 · Graph','Thin lines with vertex dots, a network diagram.'],['a8-float','A8 · Floating Y','Y detached from the outline.'],['a9-tile','A9 · App tile','A1 on a dark rounded tile for app icons.']];
+g.innerHTML=V.map(([f,t,d])=>`<div class="c"><h2>${t}</h2><p>${d}</p><div class="big"><img src="${f}.svg" width="128"><img src="${f}.svg" width="64" class="lt"></div>
+<div class="nav"><img src="${f}.svg" width="28">YukiChain</div><div class="fav"><img src="${f}.svg" width="16"> 16px favicon</div></div>`).join('');
+</script></body></html>

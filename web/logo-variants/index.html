@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>YukiChain logo variants</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&family=Onest:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#080b10;color:#eaf0f4;font:15px Onest,sans-serif;padding:32px 16px}h1{font:700 22px Unbounded;margin:0 0 24px}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;max-width:1300px}
+.c{background:#0c1016;border:1px solid #18202c;border-radius:16px;padding:20px}.c h2{font:700 14px Unbounded;margin:0 0 4px}.c p{color:#7c8995;margin:0 0 16px;font-size:13px}
+.big{display:flex;gap:20px;align-items:end}.lt{background:#eaf0f4;border-radius:10px;padding:10px}
+.nav{display:flex;align-items:center;gap:10px;font:700 17px Unbounded;letter-spacing:-.02em;margin-top:16px;padding:12px;background:#080b10;border-radius:10px}
+.fav{display:flex;gap:10px;align-items:center;margin-top:12px;color:#7c8995;font-size:12px}</style></head><body>
+<h1>YukiChain — logo variants</h1><div class="g" id="g"></div>
+<script>
+const V=[['a-iso-y','A · Iso-Y','Block outline; the cube edges read as a Y in persimmon.'],
+['b-cube','B · Solid block','Three-tone isometric block. Inner seams form the Y.'],
+['c-block-flake','C · Block flake','Snowflake whose arms end in blocks — a tiny network graph.'],
+['d-monogram','D · Monogram','Bold Y on an ink tile, persimmon block at the junction. Strongest as an app icon.'],
+['e-link-flake','E · Link flake','Six chain links arranged as a snowflake.'],
+['../logo','Current','For comparison.']];
+g.innerHTML=V.map(([f,t,d])=>`<div class="c"><h2>${t}</h2><p>${d}</p><div class="big"><img src="${f}.svg" width="128"><img src="${f}.svg" width="64" class="lt"></div>
+<div class="nav"><img src="${f}.svg" width="28">YukiChain</div><div class="fav"><img src="${f}.svg" width="16"> 16px favicon</div></div>`).join('');
+</script></body></html>

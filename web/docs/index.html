@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YukiChain Docs</title>
+<meta name="description" content="YukiChain developer docs: REST API, live stream, transaction signing, .yuki names and YUKI Connect for dApps.">
+<meta name="theme-color" content="#080b10">
+<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>(function(){var t;try{t=localStorage.getItem('yc_docs_theme')}catch(e){}if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t})()</script>
+<style>
+:root{
+  --ink:#080b10;--ink-2:#0c1016;--ink-3:#121822;--ink-4:#19212d;
+  --hair:rgba(220,235,245,.09);--hair-2:rgba(220,235,245,.17);
+  --snow:#eaf0f4;--snow-2:#aab7c3;--snow-3:#7c8995;--ice:#bcd6e4;
+  --accent:#f26a3f;--accent-2:#ff7c52;--ok:#7fdcb0;--bad:#ff8a78;--warn:#f2c46a;
+  --code:#0a0e14;--c-str:#9fd8b8;--c-num:#f2c46a;--c-key:#ff9a76;--c-com:#5d6a76;--c-prop:#bcd6e4;
+  --g:linear-gradient(140deg,#ffa074,#f26a3f 46%,#d9481f);
+  --ease:cubic-bezier(.23,1,.32,1);--head:'Unbounded',sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+}
+html[data-theme=light]{
+  --ink:#f5f7f9;--ink-2:#ffffff;--ink-3:#eef1f4;--ink-4:#e3e8ed;
+  --hair:rgba(15,23,33,.08);--hair-2:rgba(15,23,33,.14);
+  --snow:#0d131a;--snow-2:#475563;--snow-3:#7b8794;--ice:#3f86ad;
+  --accent:#e2552a;--accent-2:#cc4a20;--ok:#169063;--bad:#d1422f;--warn:#a8740f;
+  --code:#0f141b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-padding-top:84px}
+body{background:var(--ink);color:var(--snow);font:15.5px/1.65 'Onest',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent-2);text-decoration:none}a:hover{text-decoration:underline}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}
+code,.mono{font-family:var(--mono);font-size:.88em}
+p code,li code,td code{background:var(--ink-3);border:1px solid var(--hair);padding:1px 6px;border-radius:6px;color:var(--snow);white-space:nowrap}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:18px;height:64px;padding:0 24px;background:color-mix(in srgb,var(--ink) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hair)}
+.brand{display:flex;align-items:center;gap:10px;font:700 16px var(--head);letter-spacing:-.02em;color:var(--snow)}
+.brand:hover{text-decoration:none}
+.brand img{width:28px;height:28px}
+html[data-theme=light] .brand img{content:url(/logo-light.svg)}
+.brand em{font-style:normal;color:var(--snow-3);font-weight:500}
+.bar nav{display:flex;gap:2px;margin-left:auto}
+.bar nav a{color:var(--snow-2);padding:7px 13px;border-radius:99px;font-size:14px;font-weight:500}
+.bar nav a:hover{color:var(--snow);background:var(--ink-3);text-decoration:none}
+.tg{width:38px;height:38px;border-radius:50%;border:1px solid var(--hair-2);background:none;display:grid;place-items:center;cursor:pointer;color:var(--snow-2)}
+.tg:hover{color:var(--snow);background:var(--ink-3)}
+.tg svg{width:18px;height:18px}
+.menu-b{display:none}
+
+/* layout */
+.lay{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1280px;margin:0 auto}
+.side{position:sticky;top:64px;height:calc(100vh - 64px);overflow:auto;padding:28px 18px 40px 24px;border-right:1px solid var(--hair)}
+.side h4{font:600 11px var(--head);letter-spacing:.1em;text-transform:uppercase;color:var(--snow-3);margin:22px 10px 8px}
+.side h4:first-child{margin-top:0}
+.side a{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;color:var(--snow-2);font-size:14px;line-height:1.35}
+.side a:hover{background:var(--ink-3);color:var(--snow);text-decoration:none}
+.side a.on{color:var(--snow);background:var(--ink-3);box-shadow:inset 2px 0 0 var(--accent)}
+.side a .m{font:600 9.5px var(--mono);padding:1px 5px;border-radius:5px;flex:none}
+.m.get{color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+.m.post{color:var(--accent-2);background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.m.sse{color:var(--ice);background:color-mix(in srgb,var(--ice) 16%,transparent)}
+main{padding:0 48px 120px;min-width:0}
+.doc{max-width:860px}
+
+/* hero */
+.hero{position:relative;padding:64px 0 40px;isolation:isolate}
+.hero:before{content:"";position:absolute;left:-30%;right:-20%;top:-40%;height:120%;z-index:-1;filter:blur(70px);pointer-events:none;opacity:.6;
+  background:radial-gradient(28% 34% at 30% 50%,rgba(242,106,63,.35),transparent 72%),radial-gradient(26% 30% at 70% 40%,rgba(143,200,230,.22),transparent 72%)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font:600 12px var(--head);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-2);margin-bottom:16px}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(127,220,176,.6);animation:live 2s infinite}
+@keyframes live{70%{box-shadow:0 0 0 7px rgba(127,220,176,0)}}
+h1{font:700 clamp(32px,5vw,52px)/1.05 var(--head);letter-spacing:-.045em;margin-bottom:18px}
+.lead{font-size:18px;color:var(--snow-2);max-width:620px}
+.base{display:inline-flex;align-items:center;gap:12px;margin-top:26px;padding:8px 8px 8px 16px;border-radius:99px;background:var(--ink-2);border:1px solid var(--hair-2);font:14px var(--mono)}
+.base b{font-weight:500}
+.base button{height:32px;padding:0 14px;border-radius:99px;border:0;background:var(--ink-4);cursor:pointer;font:600 12.5px 'Onest',sans-serif}
+.base button:hover{background:var(--accent);color:#140a05}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-top:36px}
+.card{display:block;padding:18px;border-radius:20px;background:var(--ink-2);border:1px solid var(--hair);color:var(--snow);transition:border-color .2s,transform .25s var(--ease)}
+.card:hover{text-decoration:none;border-color:var(--hair-2);transform:translateY(-2px)}
+.card i{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;margin-bottom:14px;background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent-2)}
+.card i svg{width:20px;height:20px}
+.card b{display:block;font:600 15px var(--head);letter-spacing:-.02em;margin-bottom:4px}
+.card span{font-size:13.5px;color:var(--snow-3);line-height:1.45;display:block}
+.card.hl{background:linear-gradient(var(--ink-2),var(--ink-2)) padding-box,linear-gradient(140deg,rgba(242,106,63,.7),transparent 50%,rgba(143,200,230,.5)) border-box;border-color:transparent}
+
+/* content */
+section.s{padding-top:56px}
+h2{font:700 28px/1.2 var(--head);letter-spacing:-.035em;margin-bottom:14px}
+h3{font:600 19px/1.3 var(--head);letter-spacing:-.02em;margin:34px 0 10px}
+.doc p{margin-bottom:14px;color:var(--snow-2)}
+.doc p b,.doc li b{color:var(--snow);font-weight:600}
+.doc ul,.doc ol{margin:0 0 16px 22px;color:var(--snow-2)}
+.doc li{margin-bottom:6px}
+.tag{display:inline-block;font:600 11px var(--head);letter-spacing:.06em;text-transform:uppercase;color:var(--snow-3);margin-bottom:10px}
+table{width:100%;border-collapse:collapse;margin:8px 0 18px;font-size:14px}
+th{text-align:left;font:600 11px var(--head);letter-spacing:.06em;text-transform:uppercase;color:var(--snow-3);padding:10px 12px;border-bottom:1px solid var(--hair-2)}
+td{padding:10px 12px;border-bottom:1px solid var(--hair);vertical-align:top;color:var(--snow-2)}
+td:first-child{white-space:nowrap}
+td:first-child code{color:var(--snow)}
+.tw{overflow-x:auto;border:1px solid var(--hair);border-radius:16px;background:var(--ink-2);margin:10px 0 20px}
+.tw table{margin:0}.tw tr:last-child td{border-bottom:0}
+.call{border-radius:16px;padding:14px 16px;margin:14px 0 18px;border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);background:color-mix(in srgb,var(--accent) 7%,transparent);font-size:14.5px;color:var(--snow-2)}
+.call b{color:var(--snow)}
+.call.ok{border-color:color-mix(in srgb,var(--ok) 30%,transparent);background:color-mix(in srgb,var(--ok) 7%,transparent)}
+
+/* code */
+pre{position:relative;background:var(--code);color:#dfe7ee;border:1px solid rgba(220,235,245,.09);border-radius:16px;padding:16px 18px;overflow:auto;font:13px/1.65 var(--mono);margin:10px 0 18px;tab-size:2}
+pre .cp{position:absolute;top:8px;right:8px;height:28px;padding:0 10px;border-radius:8px;border:1px solid rgba(220,235,245,.14);background:#121822;color:#aab7c3;font:600 11.5px 'Onest',sans-serif;cursor:pointer;opacity:0;transition:opacity .2s}
+pre:hover .cp,pre .cp:focus{opacity:1}
+.k{color:var(--c-key)}.s1{color:var(--c-str)}.n{color:var(--c-num)}.c{color:var(--c-com);font-style:italic}.p{color:var(--c-prop)}
+
+/* endpoint */
+.ep{margin:22px 0 10px;border:1px solid var(--hair);border-radius:22px;background:var(--ink-2);overflow:hidden}
+.ep-h{display:flex;align-items:center;gap:12px;padding:16px 18px;flex-wrap:wrap}
+.ep-h .m{font:600 12px var(--mono);padding:4px 9px;border-radius:8px}
+.ep-h .path{font:500 15px var(--mono);color:var(--snow);word-break:break-all}
+.ep-h .path em{font-style:normal;color:var(--accent-2)}
+.ep-h .run{margin-left:auto;display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border-radius:99px;border:1px solid var(--hair-2);background:none;cursor:pointer;font-weight:600;font-size:13px;color:var(--snow-2);transition:background .2s,color .2s}
+.ep-h .run:hover{background:var(--ink-3);color:var(--snow)}
+.ep-h .run svg{width:14px;height:14px}
+.ep-b{padding:0 18px 18px}
+.ep-b>p{margin-bottom:10px}
+.ep .tabs{display:flex;gap:4px;margin:12px 0 0}
+.ep .tabs button{height:30px;padding:0 12px;border-radius:9px;border:0;background:none;color:var(--snow-3);font-size:13px;font-weight:600;cursor:pointer}
+.ep .tabs button[aria-selected=true]{background:var(--ink-4);color:var(--snow)}
+.ep pre{margin:8px 0 0}
+.ep pre.live{border-color:color-mix(in srgb,var(--ok) 35%,transparent)}
+.ep .ps{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:13.5px}
+.ep .ps td{padding:7px 10px 7px 0;border-bottom:1px dashed var(--hair)}
+.ep .ps tr:last-child td{border-bottom:0}
+.ep .ps input{width:100%;max-width:340px;height:32px;padding:0 10px;border-radius:9px;border:1px solid var(--hair-2);background:var(--ink);font:13px var(--mono);outline:none}
+.ep .ps input:focus{border-color:var(--accent)}
+
+/* connect diagram */
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:10px;margin:22px 0 26px;padding:22px;border-radius:22px;border:1px solid var(--hair);background:var(--ink-2)}
+.node{display:grid;justify-items:center;gap:8px;text-align:center}
+.node i{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:var(--ink-3);border:1px solid var(--hair-2)}
+.node i svg{width:26px;height:26px}
+.node b{font:600 14px var(--head);letter-spacing:-.02em}
+.node small{font-size:12px;color:var(--snow-3);line-height:1.35}
+.node.br i{background:var(--g);border:0;color:#140a05}
+.wire{position:relative;width:72px;height:2px;background:var(--hair-2);border-radius:2px;overflow:hidden}
+.wire:after{content:"";position:absolute;inset:0;width:45%;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:w 1.8s cubic-bezier(.45,0,.25,1) infinite}
+.wire.r:after{animation-direction:reverse;background:linear-gradient(90deg,transparent,var(--ice),transparent)}
+@keyframes w{from{transform:translateX(-100%)}to{transform:translateX(230%)}}
+.steps{counter-reset:s;list-style:none;margin:10px 0 20px!important;display:grid;gap:10px}
+.steps li{counter-increment:s;position:relative;padding:14px 16px 14px 56px;border-radius:16px;background:var(--ink-2);border:1px solid var(--hair);margin:0!important}
+.steps li:before{content:counter(s);position:absolute;left:16px;top:13px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:700 12px var(--head);background:var(--ink-4);color:var(--snow)}
+
+/* demo */
+.demo{position:relative;margin:18px 0 10px;border-radius:26px;padding:24px;border:1px solid transparent;isolation:isolate;overflow:hidden;
+  background:linear-gradient(var(--ink-2),var(--ink-2)) padding-box,linear-gradient(140deg,rgba(242,106,63,.65),transparent 45%,rgba(143,200,230,.45)) border-box}
+.demo:before{content:"";position:absolute;inset:-40% -20% auto;height:80%;z-index:-1;filter:blur(60px);opacity:.35;pointer-events:none;background:radial-gradient(30% 40% at 25% 60%,rgba(242,106,63,.6),transparent 72%),radial-gradient(28% 36% at 78% 40%,rgba(143,200,230,.45),transparent 72%)}
+.demo-h{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.demo-h b{font:700 18px var(--head);letter-spacing:-.03em}
+.demo-h p{margin:0!important;font-size:14px}
+.demo-h #cbtn{margin-left:auto}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dbox{padding:16px;border-radius:18px;background:var(--ink);border:1px solid var(--hair)}
+.dbox h5{font:600 11px var(--head);letter-spacing:.08em;text-transform:uppercase;color:var(--snow-3);margin-bottom:10px}
+.dbox label{display:block;font-size:12.5px;color:var(--snow-3);margin:8px 0 4px}
+.dbox input{width:100%;height:40px;padding:0 12px;border-radius:12px;border:1px solid var(--hair-2);background:var(--ink-2);outline:none;font-size:14px}
+.dbox input:focus{border-color:var(--accent)}
+.dbtn{margin-top:12px;width:100%;height:44px;border-radius:99px;border:0;background:var(--g);color:#140a05;font-weight:600;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.dbtn:disabled{opacity:.4;cursor:not-allowed}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13.5px}
+.kv span{color:var(--snow-3)}.kv b{font:500 12.5px var(--mono);word-break:break-all;color:var(--snow)}
+.ok-t{color:var(--ok)!important}.bad-t{color:var(--bad)!important}
+.dlog{margin-top:12px;max-height:200px;overflow:auto;font:12px/1.6 var(--mono);color:var(--snow-2);padding:12px 14px;border-radius:14px;background:var(--code);color:#aab7c3;border:1px solid rgba(220,235,245,.09)}
+.dlog:empty{display:none}
+.dlog div{white-space:pre-wrap;word-break:break-all}
+
+.foot{margin-top:80px;padding-top:24px;border-top:1px solid var(--hair);font-size:13.5px;color:var(--snow-3);display:flex;gap:18px;flex-wrap:wrap}
+
+@media (max-width:980px){
+  .lay{grid-template-columns:1fr}
+  .side{position:fixed;left:0;top:64px;bottom:0;width:min(300px,86vw);z-index:25;background:var(--ink);transform:translateX(-100%);transition:transform .3s var(--ease);height:auto}
+  body.nav .side{transform:none;box-shadow:30px 0 60px -20px rgba(0,0,0,.5)}
+  .menu-b{display:grid}
+  main{padding:0 16px 100px}
+  .bar{padding:0 16px;gap:10px}
+  .bar nav a:not(.keep){display:none}
+  .dgrid{grid-template-columns:1fr}
+  .flow{grid-template-columns:1fr;justify-items:center}
+  .wire{width:2px;height:34px}
+  .wire:after{width:100%;height:45%;background:linear-gradient(180deg,transparent,var(--accent),transparent);animation-name:wv}
+  .wire.r:after{background:linear-gradient(180deg,transparent,var(--ice),transparent)}
+  @keyframes wv{from{transform:translateY(-100%)}to{transform:translateY(230%)}}
+  .hero{padding-top:40px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <button class="tg menu-b" id="mb" aria-label="Menu"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 6h14M3 10h14M3 14h14"/></svg></button>
+  <a class="brand" href="/docs"><img src="/logo.svg?v=2" alt=""><span>YukiChain <em>Docs</em></span></a>
+  <nav><a href="/#/explorer">Explorer</a><a href="https://wallet.yukichat.lol">Wallet</a><a class="keep" href="#connect">YUKI Connect</a></nav>
+  <button class="tg" id="tg" aria-label="Toggle theme"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 12.2A6.5 6.5 0 0 1 7.8 4 6.5 6.5 0 1 0 16 12.2Z"/></svg></button>
+</header>
+
+<div class="lay">
+<aside class="side" id="side"></aside>
+<main><div class="doc" id="doc">
+
+<div class="hero">
+  <span class="eyebrow"><i></i>yuki-testnet-1 · live</span>
+  <h1>Build on YukiChain</h1>
+  <p class="lead">A plain JSON API over HTTPS, a live block stream, ed25519 transactions you can sign in a few lines, and YUKI Connect to let people approve payments from Yuki Wallet.</p>
+  <div class="base"><span>Base URL</span><b>https://chain.yukichat.lol/api</b><button data-copy="https://chain.yukichat.lol/api">Copy</button></div>
+  <div class="cards">
+    <a class="card" href="#rest"><i><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5 3 10l4 5M13 5l4 5-4 5"/></svg></i><b>REST API</b><span>Status, blocks, transactions, accounts, names.</span></a>
+    <a class="card" href="#stream"><i><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10h3l2-5 3 10 2-5h6"/></svg></i><b>Live stream</b><span>Server-sent events for every new block.</span></a>
+    <a class="card" href="#transactions"><i><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="12" height="8" rx="2.5"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9"/></svg></i><b>Transactions</b><span>Sign bytes, nonces, fees and submitting.</span></a>
+    <a class="card hl" href="#connect"><i><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v4M13 3v4M5 7h10v3a5 5 0 0 1-10 0V7ZM10 15v2.5"/></svg></i><b>YUKI Connect</b><span>Connect wallets, request payments and signatures.</span></a>
+  </div>
+</div>
+
+<section class="s" id="basics">
+  <span class="tag">Overview</span>
+  <h2>Basics</h2>
+  <p>YukiChain is its own layer-1 network. Right now it runs as <b>yuki-testnet-1</b> with one validator, so YUKI on it has no value: use the faucet freely.</p>
+  <div class="tw"><table>
+    <tr><th>Thing</th><th>Value</th></tr>
+    <tr><td>Chain ID</td><td><code>yuki-testnet-1</code> (part of every signature)</td></tr>
+    <tr><td>Units</td><td>1 YUKI = 1,000,000,000 nanoYUKI. Every amount in the API is <b>a string of nanoYUKI</b>, so it never loses precision in JSON.</td></tr>
+    <tr><td>Addresses</td><td>bech32 with prefix <code>yuki</code>: <code>yuki1…</code>, 20 bytes = first 20 bytes of <code>sha256(ed25519 public key)</code>.</td></tr>
+    <tr><td>Keys</td><td>ed25519. Yuki Wallet derives them from BIP39 words (SLIP-10, path <code>m</code>).</td></tr>
+    <tr><td>Fee</td><td>At least <code>1000000</code> (0.001 YUKI) per transaction. Fees go to the block proposer.</td></tr>
+    <tr><td>Blocks</td><td>Every 5 s while there are pending transactions, a heartbeat block every 60 s otherwise. Final when included (single validator, no forks).</td></tr>
+    <tr><td>Time</td><td>All timestamps are Unix milliseconds.</td></tr>
+    <tr><td>Inflation</td><td>2% a year, minted to the block proposer.</td></tr>
+  </table></div>
+  <h3>Conventions</h3>
+  <ul>
+    <li>Every response is JSON. Errors use a non-2xx status and the body <code>{"error": "message"}</code>.</li>
+    <li>CORS is open (<code>Access-Control-Allow-Origin: *</code>), so you can call the API straight from a browser.</li>
+    <li>Anywhere an address is accepted you can also pass a name: <code>alice</code> or <code>alice.yuki</code>.</li>
+    <li>Lists are newest first. <code>limit</code> is capped per endpoint.</li>
+  </ul>
+</section>
+
+<section class="s" id="rest">
+  <span class="tag">Reference</span>
+  <h2>REST API</h2>
+  <p>Press <b>Run</b> on any endpoint to call the live testnet from this page.</p>
+  <div id="eps"></div>
+</section>
+
+<section class="s" id="stream">
+  <span class="tag">Realtime</span>
+  <h2>Live stream</h2>
+  <div class="ep" id="ep-stream"><div class="ep-h"><span class="m sse">SSE</span><span class="path">/api/stream</span><button class="run" id="srun"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9-5.5z"/></svg>Listen</button></div>
+  <div class="ep-b"><p>A <a href="https://developer.mozilla.org/docs/Web/API/EventSource" target="_blank" rel="noopener">server-sent events</a> stream. Each new block sends one <code>data:</code> line with the block summary and fresh chain status. A comment line <code>: ping</code> keeps the connection open every 25 seconds; nothing else is sent until the first block, so a browser may show the stream as “connecting” for up to a minute when the chain is idle.</p>
+  <pre data-lang="js">const es = new EventSource('https://chain.yukichat.lol/api/stream');
+es.onmessage = e => {
+  const {block, status} = JSON.parse(e.data);
+  console.log('block', block.height, 'with', block.txs, 'txs');
+  if (block.txs > 0) refreshBalances(); // something happened
+};</pre>
+  <pre data-lang="json" id="sout">data: {"block":{"height":2928,"time":1793045392990,"hash":"b9d0…0f3c","txs":0,"reward":"38055861095","fees":"0","proposer":"yuki1d32n…chy6"},"status":{…same as /api/status…}}</pre></div></div>
+</section>
+
+<section class="s" id="transactions">
+  <span class="tag">Writing</span>
+  <h2>Transactions</h2>
+  <p>A transaction is a JSON object signed with the sender's ed25519 key. Build it, sign the <b>sign bytes</b>, and <code>POST /api/tx</code>. It is checked right away (signature, nonce, balance) and included in the next block.</p>
+  <h3 id="tx-object">The transaction object</h3>
+  <div class="tw"><table>
+    <tr><th>Field</th><th>Type</th><th>Meaning</th></tr>
+    <tr><td><code>type</code></td><td>string</td><td><code>transfer</code>, <code>name_register</code>, <code>name_transfer</code> or <code>name_target</code></td></tr>
+    <tr><td><code>from</code></td><td>address</td><td>Sender; must match <code>pubkey</code></td></tr>
+    <tr><td><code>pubkey</code></td><td>hex</td><td>32-byte ed25519 public key of the sender</td></tr>
+    <tr><td><code>to</code></td><td>address</td><td>Recipient (transfer), new owner (name_transfer), target or <code>""</code> (name_target)</td></tr>
+    <tr><td><code>amount</code></td><td>string</td><td>nanoYUKI. Only used by <code>transfer</code>; <code>"0"</code> otherwise</td></tr>
+    <tr><td><code>fee</code></td><td>string</td><td>nanoYUKI, at least <code>"1000000"</code></td></tr>
+    <tr><td><code>nonce</code></td><td>number</td><td>The sender's <code>next_nonce</code> from <code>/api/account</code> (counts pending txs too)</td></tr>
+    <tr><td><code>name</code></td><td>string</td><td>Name without <code>.yuki</code> for name_* types, else <code>""</code></td></tr>
+    <tr><td><code>memo</code></td><td>string</td><td>Optional public comment, up to 140 bytes, no newlines</td></tr>
+    <tr><td><code>sig</code></td><td>hex</td><td>64-byte ed25519 signature of the sign bytes</td></tr>
+  </table></div>
+  <h3 id="sign-bytes">Sign bytes</h3>
+  <p>The nine fields joined with a newline, numbers in decimal, empty strings for unused fields:</p>
+  <pre data-lang="txt">chain_id \n type \n from \n to \n amount \n fee \n nonce \n name \n memo</pre>
+  <p>The transaction hash is <code>sha256(sign_bytes + "\n" + sig)</code> as hex; the node returns it from <code>POST /api/tx</code>.</p>
+  <h3 id="sign-js">Example: send YUKI from JavaScript</h3>
+  <pre data-lang="js">// &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/tweetnacl/1.0.3/nacl-fast.min.js"&gt;&lt;/script&gt;
+const API = 'https://chain.yukichat.lol/api';
+const hex = b => [...b].map(x => x.toString(16).padStart(2, '0')).join('');
+
+async function send(kp, from, to, amountNano, memo = '') {
+  const {chain_id} = await (await fetch(API + '/status')).json();
+  const {next_nonce} = await (await fetch(API + '/account/' + from)).json();
+  const tx = {type: 'transfer', from, to, amount: String(amountNano), fee: '1000000',
+              nonce: next_nonce, name: '', memo, pubkey: hex(kp.publicKey)};
+  const bytes = [chain_id, tx.type, tx.from, tx.to, tx.amount, tx.fee, tx.nonce, tx.name, tx.memo].join('\n');
+  tx.sig = hex(nacl.sign.detached(new TextEncoder().encode(bytes), kp.secretKey));
+  const r = await fetch(API + '/tx', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(tx)});
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error);
+  return j.hash;
+}</pre>
+  <h3 id="tx-types">Types</h3>
+  <div class="tw"><table>
+    <tr><th>type</th><th>What it does</th><th>Cost to sender</th></tr>
+    <tr><td><code>transfer</code></td><td>Moves <code>amount</code> to <code>to</code>.</td><td>amount + fee</td></tr>
+    <tr><td><code>name_register</code></td><td>Registers <code>name</code> for one year, or renews it by a year if you already own it.</td><td>name price (burned) + fee</td></tr>
+    <tr><td><code>name_transfer</code></td><td>Gives the name to <code>to</code> and clears its target.</td><td>fee</td></tr>
+    <tr><td><code>name_target</code></td><td>Points the name at another address (<code>to</code>), or back at the owner with <code>""</code>.</td><td>fee</td></tr>
+  </table></div>
+  <h3 id="names">Name prices</h3>
+  <p>Names are 3 to 32 characters: <code>a-z</code>, <code>0-9</code> and single dashes, not starting or ending with a dash. The yearly price depends on length and is burned. A name with any digit costs half.</p>
+  <div class="tw"><table>
+    <tr><th>Length</th><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9–11</td><td>12+</td></tr>
+    <tr><th>YUKI / year</th><td>3000</td><td>1000</td><td>300</td><td>100</td><td>50</td><td>25</td><td>15</td><td>10</td></tr>
+  </table></div>
+  <h3 id="errors">Common errors from POST /api/tx</h3>
+  <div class="tw"><table>
+    <tr><th>error</th><th>Fix</th></tr>
+    <tr><td><code>bad nonce: want N</code></td><td>Use <code>next_nonce</code> from <code>/api/account</code>; send one transaction at a time or count up yourself.</td></tr>
+    <tr><td><code>bad signature</code></td><td>Sign bytes differ: check the chain ID, field order and that amounts are decimal strings.</td></tr>
+    <tr><td><code>pubkey does not match sender</code></td><td><code>from</code> must be the address of <code>pubkey</code>.</td></tr>
+    <tr><td><code>insufficient balance</code></td><td>Balance must cover this and all your pending transactions.</td></tr>
+    <tr><td><code>fee below minimum 1000000</code></td><td>Pay at least 0.001 YUKI.</td></tr>
+    <tr><td><code>memo too long or has newlines</code></td><td>Up to 140 bytes on one line.</td></tr>
+  </table></div>
+</section>
+
+<section class="s" id="connect">
+  <span class="tag">For dApps</span>
+  <h2>YUKI Connect</h2>
+  <p>YUKI Connect lets a website talk to Yuki Wallet: the person scans a QR code (or taps a link on their phone), approves the connection, and from then on your site can <b>see their address</b> and <b>ask them to approve payments or sign messages</b>. Keys never leave the wallet.</p>
+  <div class="flow" aria-hidden="true">
+    <div class="node"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2.5"/><path d="M8 20h8"/></svg></i><b>Your dApp</b><small>yuki-connect.js<br>session key A</small></div>
+    <span class="wire"></span>
+    <div class="node br"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4"/></svg></i><b>Bridge</b><small>only sees<br>encrypted blobs</small></div>
+    <span class="wire r"></span>
+    <div class="node"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></svg></i><b>Yuki Wallet</b><small>approves each request<br>session key B</small></div>
+  </div>
+
+  <h3 id="connect-demo">Try it</h3>
+  <p>Connect your Yuki Wallet to this page, then send yourself some test YUKI or sign a message. Have no wallet yet? <a href="https://wallet.yukichat.lol" target="_blank" rel="noopener">Get one</a> and tap Faucet.</p>
+  <div class="demo">
+    <div class="demo-h"><div><b>Live demo</b><p class="dim" id="dst">Not connected</p></div><div id="cbtn"></div></div>
+    <div class="dgrid">
+      <div class="dbox"><h5>Account</h5><div class="kv" id="dacc"><span>Status</span><b>Connect a wallet first</b></div></div>
+      <div class="dbox"><h5>Send a payment</h5>
+        <label for="dto">To</label><input id="dto" placeholder="yuki1… (defaults to yourself)" autocomplete="off" spellcheck="false">
+        <label for="damt">Amount, YUKI</label><input id="damt" value="0.5" inputmode="decimal">
+        <button class="dbtn" id="dsend" disabled>Request payment</button></div>
+      <div class="dbox" style="grid-column:1/-1"><h5>Sign a message</h5>
+        <label for="dmsg">Text</label><input id="dmsg" value="I own this wallet and want to log in to YukiChain Docs">
+        <button class="dbtn" id="dsign" disabled>Request signature</button>
+        <div class="dlog" id="dlog"></div></div>
+    </div>
+  </div>
+
+  <h3 id="connect-start">Quick start</h3>
+  <ol class="steps">
+    <li><b>Host a manifest</b> at a public HTTPS URL, with CORS allowed. The wallet shows its name and icon, and the domain of <code>url</code> is what proofs and signatures are bound to.
+<pre data-lang="json">{
+  "url": "https://your.app",
+  "name": "Your App",
+  "iconUrl": "https://your.app/icon-180.png"
+}</pre></li>
+    <li><b>Load the SDK</b> (it pulls in tweetnacl and the QR encoder from cdnjs by itself):
+<pre data-lang="html">&lt;script src="https://chain.yukichat.lol/sdk/yuki-connect.js"&gt;&lt;/script&gt;</pre></li>
+    <li><b>Add the button</b> and react to the account:
+<pre data-lang="js">const yc = new YukiConnect({manifestUrl: 'https://your.app/yuki-connect.json'});
+yc.button('#connect');                 // Connect button, becomes an account chip with a menu
+yc.onStatusChange(account => {
+  if (account) console.log('connected', account.address, account.name);
+  else console.log('disconnected');
+});</pre></li>
+    <li><b>Ask for a payment</b>. The person sees a compact approval window in the wallet and holds a button to confirm:
+<pre data-lang="js">const {hash} = await yc.sendTransaction({
+  to: 'yuki1…',                        // or resolve a name with /api/account/alice.yuki first
+  amount: YukiConnect.toNano('2.5'),   // string of nanoYUKI
+  memo: 'Order #1042',
+});</pre></li>
+  </ol>
+
+  <h3 id="connect-sdk">SDK reference</h3>
+  <div class="tw"><table>
+    <tr><th>Call</th><th>What it does</th></tr>
+    <tr><td><code>new YukiConnect(opts)</code></td><td><code>manifestUrl</code> (required), <code>theme</code>: <code>'auto' | 'dark' | 'light'</code>, <code>storageKey</code> (default <code>'yuki-connect'</code>), <code>bridge</code>, <code>walletUrl</code>. The session survives reloads (localStorage).</td></tr>
+    <tr><td><code>yc.connect({proof?})</code></td><td>Opens the connect window (QR + “Open Yuki Wallet”). Resolves with the account, rejects with <code>code: 300</code> if declined or <code>'closed'</code> if the window is closed. Pass <code>proof</code> (a server nonce) to get a signed ownership proof.</td></tr>
+    <tr><td><code>yc.button(el, {proof?})</code></td><td>Renders the Connect button / account chip into an element and keeps it in sync. <code>proof</code> may be a function.</td></tr>
+    <tr><td><code>yc.account</code></td><td><code>{address, pubkey, name, chain, device, proof}</code> or <code>null</code>. <code>name</code> is the wallet's active <code>.yuki</code> name, if any.</td></tr>
+    <tr><td><code>yc.onStatusChange(fn)</code></td><td>Called with the account on connect and <code>null</code> on disconnect (from either side). Returns an unsubscribe function.</td></tr>
+    <tr><td><code>yc.sendTransaction(tx, {modal?})</code></td><td><code>{to, amount, memo?, valid_until?}</code> → <code>{hash}</code>. Shows a “Confirm in Yuki Wallet” window unless <code>modal: false</code>. Default expiry 5 minutes.</td></tr>
+    <tr><td><code>yc.signMessage(text)</code></td><td>→ <code>{text, signature, pubkey, address, domain, timestamp}</code>. Check it with <code>YukiConnect.verifySignedMessage</code>.</td></tr>
+    <tr><td><code>yc.disconnect()</code></td><td>Tells the wallet and forgets the session.</td></tr>
+    <tr><td><code>yc.connectLink(request)</code></td><td>The raw universal link, if you want to draw your own UI.</td></tr>
+    <tr><td><code>YukiConnect.toNano / fromNano</code></td><td><code>'1.5'</code> ↔ <code>'1500000000'</code></td></tr>
+    <tr><td><code>YukiConnect.verifyProof(account)</code></td><td>Async. True if the wallet key matches the address and signed your proof payload.</td></tr>
+  </table></div>
+  <p>Errors carry a <code>code</code>: <code>300</code> declined by the person, <code>400</code> bad request, <code>500</code> the wallet could not send (the message says why), <code>'expired'</code>, <code>'cancelled'</code> (closed the window on your side).</p>
+
+  <h3 id="connect-proof">Log in with a proof</h3>
+  <p>An address alone proves nothing: anyone can type one. To log someone in, give the wallet a one-time nonce from your server. The wallet signs it together with your domain, and your server checks the signature.</p>
+<pre data-lang="js">// browser
+const nonce = await (await fetch('/auth/nonce')).text();
+const account = await yc.connect({proof: nonce});
+await fetch('/auth/verify', {method: 'POST', body: JSON.stringify(account)});
+
+// server (Node, tweetnacl): rebuild the signed string exactly
+const msg = ['yuki-connect/v1', p.domain, p.timestamp, account.address, p.payload].join('\n');
+ok = p.domain === 'your.app' && p.payload === issuedNonce && Date.now() - p.timestamp &lt; 5 * 60e3
+  && nacl.sign.detached.verify(Buffer.from(msg), Buffer.from(p.signature, 'hex'), Buffer.from(account.pubkey, 'hex'))
+  && addressOf(account.pubkey) === account.address;   // bech32('yuki', sha256(pubkey)[0:20])</pre>
+  <p><code>signMessage</code> works the same way with the prefix <code>yuki-signed-message/v1</code> and <code>text</code> in place of <code>payload</code>.</p>
+
+  <h3 id="connect-protocol">Protocol</h3>
+  <p>You only need this to write your own SDK or wallet.</p>
+  <ol>
+    <li><b>Session keys.</b> The dApp makes an X25519 key pair (<code>nacl.box.keyPair()</code>). Its public key, as 64 hex chars, is the dApp's <b>client ID</b>.</li>
+    <li><b>Connect link.</b> <code>https://wallet.yukichat.lol/connect?v=1&amp;id=&lt;dApp client ID&gt;&amp;r=&lt;base64url(JSON request)&gt;</code>, where the request is <code>{"manifestUrl": "…", "items": [{"name": "address"}, {"name": "proof", "payload": "…"}]}</code>. The Android app opens these links directly; anywhere else they open the web wallet.</li>
+    <li><b>Wallet session.</b> On approval the wallet makes its own X25519 key pair and sends a <code>connect</code> event to the dApp's client ID through the bridge. From then on both sides only accept messages from each other's client ID.</li>
+    <li><b>Encryption.</b> Each message is JSON, encrypted with <code>nacl.box(json, nonce, theirPublic, mySecret)</code>. On the wire: <code>base64(nonce[24] ‖ box)</code>.</li>
+  </ol>
+  <div class="tw"><table>
+    <tr><th>Direction</th><th>Message</th></tr>
+    <tr><td>wallet → dApp</td><td><code>{"event":"connect","payload":{"items":[{"name":"address","address","pubkey","chain","yukiName"},{"name":"proof","proof":{"timestamp","domain","payload","signature"}}],"device":{"app","version","platform"}}}</code></td></tr>
+    <tr><td>wallet → dApp</td><td><code>{"event":"connect_error","payload":{"code":300,"message":"Declined in wallet"}}</code></td></tr>
+    <tr><td>dApp → wallet</td><td><code>{"method":"sendTransaction","id":"1","params":{"to","amount","memo","valid_until"}}</code></td></tr>
+    <tr><td>dApp → wallet</td><td><code>{"method":"signMessage","id":"2","params":{"text"}}</code></td></tr>
+    <tr><td>wallet → dApp</td><td><code>{"id":"1","result":{"hash"}}</code> or <code>{"id":"1","error":{"code","message"}}</code></td></tr>
+    <tr><td>either way</td><td><code>{"method":"disconnect"}</code> (dApp) / <code>{"event":"disconnect"}</code> (wallet)</td></tr>
+  </table></div>
+
+  <h3 id="bridge">Bridge API</h3>
+  <p>The bridge is a dumb relay at <code>https://chain.yukichat.lol/bridge</code>. It keeps each message for its TTL (max 300 s) so a wallet that opens a minute later still gets it.</p>
+  <div class="ep"><div class="ep-h"><span class="m post">POST</span><span class="path">/bridge/message?client_id=<em>{from}</em>&amp;to=<em>{to}</em>&amp;ttl=<em>{seconds}</em></span></div>
+    <div class="ep-b"><p>Body: the base64 encrypted message as plain text, up to 64 KB. Returns <code>{"ok":true,"id":42}</code>.</p></div></div>
+  <div class="ep"><div class="ep-h"><span class="m sse">SSE</span><span class="path">/bridge/events?client_id=<em>{id1,id2,…}</em>&amp;last_event_id=<em>{n}</em></span></div>
+    <div class="ep-b"><p>Streams <code>event: message</code> with <code>data: {"from":"…","message":"…"}</code> and an <code>id</code> you pass back as <code>last_event_id</code> after a reconnect. Up to 100 client IDs per connection; <code>event: heartbeat</code> every 15 s.</p></div></div>
+</section>
+
+<footer class="foot"><span>YukiChain · yuki-testnet-1</span><a href="/#/explorer">Explorer</a><a href="https://wallet.yukichat.lol">Yuki Wallet</a><a href="/sdk/yuki-connect.js">yuki-connect.js</a><a href="https://yuki.yukichat.lol">Yuki ecosystem</a></footer>
+</div></main>
+</div>
+
+<script src="/sdk/yuki-connect.js?v=1"></script>
+<script>
+const API = 'https://chain.yukichat.lol/api';
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const RUN = '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9-5.5z"/></svg>';
+
+/* tiny highlighter: one pass, so tokens never nest */
+function hl(code, lang) {
+  if (lang === 'txt') return esc(code);
+  const re = lang === 'json'
+    ? /("(?:[^"\\]|\\.)*")(\s*:)?|(-?\b\d+(?:\.\d+)?\b)|(\btrue\b|\bfalse\b|\bnull\b)/g
+    : /(\/\/[^\n]*|<!--[\s\S]*?-->)|('(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"|`(?:[^`\\]|\\.)*`)|\b(const|let|var|await|async|function|return|new|if|else|throw|for|of|true|false|null|import|from|export)\b|(\b\d+(?:\.\d+)?(?:e\d+)?\b)/g;
+  let out = '', i = 0, m;
+  while ((m = re.exec(code))) {
+    out += esc(code.slice(i, m.index)); i = re.lastIndex;
+    if (lang === 'json') out += m[1] ? `<span class="${m[2] ? 'p' : 's1'}">${esc(m[1])}</span>${m[2] ? esc(m[2]) : ''}` : m[3] ? `<span class="n">${m[3]}</span>` : `<span class="k">${m[4]}</span>`;
+    else out += m[1] ? `<span class="c">${esc(m[1])}</span>` : m[2] ? `<span class="s1">${esc(m[2])}</span>` : m[3] ? `<span class="k">${m[3]}</span>` : `<span class="n">${m[4]}</span>`;
+  }
+  return out + esc(code.slice(i));
+}
+function paint(pre) {
+  const lang = pre.dataset.lang || 'js', raw = pre.dataset.raw ?? pre.textContent;
+  pre.dataset.raw = raw; pre.innerHTML = hl(raw, lang === 'html' ? 'js' : lang) + '<button class="cp">Copy</button>';
+  pre.querySelector('.cp').onclick = e => navigator.clipboard.writeText(raw).then(() => { e.target.textContent = 'Copied'; setTimeout(() => e.target.textContent = 'Copy', 1200); });
+}
+
+/* endpoints: path params in {braces}, query params listed separately */
+const ADDR = 'yuki1yx0atzz3wj4gv8rqx0uayd0r55rrwddl7hh9rd';
+const EPS = [
+  {id: 'status', m: 'GET', p: '/api/status', t: 'Chain status', d: 'Height, head block, supply, burned, staked, counters and constants. Cheap; poll it or use the stream.',
+    ex: '{"chain_id":"yuki-testnet-1","height":2927,"head_hash":"fc40…0789","head_time":1793045332990,"genesis_time":1792870113579,"supply":"1000108029578965517","burned":"3100000000000","staked":"200111129599965517","accounts":9,"txs":21,"names":3,"mempool":0,"validators":1,"validator":"yuki1d32n9fyx2gxdsun4t90nsmekhwr900pxs9chy6","inflation_pct":2,"block_ms":5000,"min_fee":"1000000"}'},
+  {id: 'blocks', m: 'GET', p: '/api/blocks', t: 'Latest blocks', d: 'Block summaries, newest first.', q: [['limit', '5', 'default 20, max 100'], ['before', '', 'only blocks below this height (paging)']],
+    ex: '[{"height":2927,"time":1793045332990,"hash":"fc40…0789","txs":0,"reward":"38055859646","fees":"0","proposer":"yuki1d32n…chy6"}]'},
+  {id: 'block', m: 'GET', p: '/api/block/{id}', t: 'One block', d: 'Full block with its transactions, by height or hash.', pp: [['id', '1', 'height or block hash']],
+    ex: '{"height":1,"time":1792870173902,"prev":"9d86…29e4","tx_root":"e3b0…b855","state_root":"2410…d9c5","proposer":"yuki1d32n…chy6","reward":"38256595636","fees":"0","hash":"8125…fd25","sig":"9feb…1502","txs":[]}'},
+  {id: 'txs', m: 'GET', p: '/api/txs', t: 'Latest transactions', d: 'Most recent included transactions across the chain.', q: [['limit', '5', 'default 20, max 100']],
+    ex: '[{"height":2922,"time":1793045031491,"tx":{"type":"transfer","from":"yuki1jdpz…mhz7","pubkey":"6869…755c","to":"yuki1tjce…afp3","amount":"2000000000","fee":"1000000","nonce":6,"sig":"bfaf…0602","hash":"2fe4…c6be"}}]'},
+  {id: 'tx', m: 'GET', p: '/api/tx/{hash}', t: 'One transaction', d: 'An included transaction with its block, or <code>{"tx":…,"pending":true}</code> while it waits in the mempool. 404 if unknown.', pp: [['hash', '', '64 hex chars']],
+    ex: '{"tx":{…},"height":2922,"time":1793045031491,"block_hash":"9b92…0a39"}'},
+  {id: 'account', m: 'GET', p: '/api/account/{id}', t: 'Account', d: 'Balance, nonces, owned names, history (newest first) and pending transactions. Unknown but valid addresses return a zero balance. <code>next_nonce</code> is the nonce for your next transaction.', pp: [['id', ADDR, 'address, name or name.yuki']], q: [['limit', '3', 'history page size, default 25, max 100'], ['offset', '', 'skip this many']],
+    ex: '{"address":"yuki1…","balance":"125000000000","nonce":4,"next_nonce":4,"label":"","names":[{"name":"alice","owner":"yuki1…","target":"","resolves":"yuki1…","registered":1793043237490,"expires":1824579237490,"active":true}],"tx_count":12,"txs":[{"tx":{…},"height":2922,"time":1793045031491,"block_hash":"…"}],"pending":null,"is_validator":false}'},
+  {id: 'top', m: 'GET', p: '/api/top', t: 'Richest accounts', d: 'Accounts by balance, with known labels (genesis funds, faucet, validator).', q: [['limit', '5', 'default 50, max 200']],
+    ex: '[{"address":"yuki1yx0a…h9rd","balance":"300000000000000000","label":"Ecosystem fund"}]'},
+  {id: 'names', m: 'GET', p: '/api/names', t: 'Recent names', d: 'Registered names, newest first, including expired ones (<code>active: false</code>).', q: [['limit', '5', 'default 50, max 200']],
+    ex: '[{"name":"fat","owner":"yuki1tjce…afp3","target":"","resolves":"yuki1tjce…afp3","registered":1793043237490,"expires":1824579237490,"active":true}]'},
+  {id: 'name', m: 'GET', p: '/api/name/{name}', t: 'Name lookup', d: 'Availability and yearly price (nanoYUKI) of a name; owner and target when taken. 400 for invalid names.', pp: [['name', 'kopro', 'with or without .yuki']],
+    ex: '{"name":"kopro","available":true,"price":"300000000000"}'},
+  {id: 'search', m: 'GET', p: '/api/search', t: 'Search', d: 'Tells what a string is: <code>account</code>, <code>tx</code>, <code>block</code> or <code>name</code>. 404 when nothing matches.', q: [['q', '1', 'address, hash, height or name']],
+    ex: '{"kind":"block","id":"1"}'},
+  {id: 'daily', m: 'GET', p: '/api/stats/daily', t: 'Daily activity', d: 'Transactions per UTC day, oldest first. <code>start_day</code> is the first day at 00:00 UTC.', q: [['days', '7', 'default 14, max 60']],
+    ex: '{"start_day":1792800000000,"txs":[8,0,13]}'},
+  {id: 'submit', m: 'POST', p: '/api/tx', t: 'Submit a transaction', d: 'Body: a signed <a href="#tx-object">transaction object</a> (max 16 KB). Returns <code>{"hash"}</code> once it is in the mempool. See <a href="#transactions">Transactions</a>.', noRun: true,
+    body: '{"type":"transfer","from":"yuki1…","pubkey":"…","to":"yuki1…","amount":"1000000000","fee":"1000000","nonce":4,"name":"","memo":"thanks","sig":"…"}', ex: '{"hash":"2fe41cb0506df98b6ce8bcdbf44dc3e7e7e27a2c9a3f3c947495127f3956c6be"}'},
+  {id: 'faucet', m: 'POST', p: '/api/faucet', t: 'Faucet', d: 'Sends 100 test YUKI. Once per address and per IP every 24 hours (429 otherwise).', noRun: true,
+    body: '{"address":"yuki1… or name.yuki"}', ex: '{"hash":"…"}'},
+];
+function epHTML(e) {
+  const path = esc(e.p).replace(/\{(\w+)\}/g, '<em>{$1}</em>');
+  const params = [...(e.pp || []).map(x => [...x, 'path']), ...(e.q || []).map(x => [...x, 'query'])];
+  return `<div class="ep" id="ep-${e.id}"><div class="ep-h"><span class="m ${e.m.toLowerCase()}">${e.m}</span><span class="path">${path}</span>${e.noRun ? '' : `<button class="run" data-run="${e.id}">${RUN}Run</button>`}</div>
+    <div class="ep-b"><p><b>${e.t}.</b> ${e.d}</p>
+    ${params.length ? `<table class="ps">${params.map(([k, v, h, w]) => `<tr><td style="width:1%"><code>${k}</code></td><td style="width:42%"><input data-k="${k}" data-w="${w}" value="${esc(v)}" aria-label="${k}" spellcheck="false"></td><td class="dim" style="font-size:12.5px">${w} · ${h}</td></tr>`).join('')}</table>` : ''}
+    <div class="tabs" role="tablist"><button role="tab" aria-selected="true" data-t="res">Response</button><button role="tab" aria-selected="false" data-t="curl">curl</button><button role="tab" aria-selected="false" data-t="js">JavaScript</button></div>
+    <pre data-lang="json" data-v="res">${esc(pretty(e.ex))}</pre><pre data-lang="txt" data-v="curl" hidden></pre><pre data-lang="js" data-v="js" hidden></pre></div></div>`;
+}
+function pretty(s) { try { return JSON.stringify(JSON.parse(s.replace(/…(?=[,}\]"])/g, '…')), null, 2); } catch { return s; } }
+function urlOf(e, box) {
+  let p = e.p; const q = new URLSearchParams();
+  box.querySelectorAll('input[data-k]').forEach(i => { const v = i.value.trim(); if (i.dataset.w === 'path') p = p.replace('{' + i.dataset.k + '}', encodeURIComponent(v)); else if (v) q.set(i.dataset.k, v); });
+  return 'https://chain.yukichat.lol' + p + (q.toString() ? '?' + q : '');
+}
+function snippets(e, box) {
+  const u = urlOf(e, box), cu = box.querySelector('[data-v=curl]'), js = box.querySelector('[data-v=js]');
+  cu.dataset.raw = e.m === 'POST' ? `curl -X POST '${u}' \\\n  -H 'Content-Type: application/json' \\\n  -d '${e.body}'` : `curl '${u}'`;
+  js.dataset.raw = e.m === 'POST' ? `const r = await fetch('${u}', {\n  method: 'POST',\n  headers: {'Content-Type': 'application/json'},\n  body: JSON.stringify(${e.body}),\n});\nconst data = await r.json();` : `const r = await fetch('${u}');\nconst data = await r.json();`;
+  paint(cu); paint(js);
+}
+$('#eps').innerHTML = EPS.map(epHTML).join('');
+EPS.forEach(e => {
+  const box = $('#ep-' + e.id); snippets(e, box);
+  box.querySelectorAll('input').forEach(i => i.oninput = () => snippets(e, box));
+  box.querySelectorAll('[data-t]').forEach(b => b.onclick = () => {
+    box.querySelectorAll('[data-t]').forEach(x => x.setAttribute('aria-selected', x === b));
+    box.querySelectorAll('pre[data-v]').forEach(p => p.hidden = p.dataset.v !== b.dataset.t);
+  });
+});
+// fill the tx hash example with a real one
+fetch(API + '/txs?limit=1').then(r => r.json()).then(l => { const i = $('#ep-tx input'); if (l[0] && i) { i.value = l[0].tx.hash; snippets(EPS.find(e => e.id === 'tx'), $('#ep-tx')); } }).catch(() => {});
+document.addEventListener('click', async ev => {
+  const b = ev.target.closest('[data-run]'); if (!b) return;
+  const e = EPS.find(x => x.id === b.dataset.run), box = $('#ep-' + e.id), pre = box.querySelector('[data-v=res]');
+  box.querySelector('[data-t=res]').click();
+  b.innerHTML = RUN + 'Running…';
+  const t0 = performance.now();
+  try {
+    const r = await fetch(urlOf(e, box)), j = await r.json();
+    pre.dataset.raw = `// ${r.status} · ${Math.round(performance.now() - t0)} ms\n` + JSON.stringify(j, null, 2); pre.classList.add('live');
+  } catch (err) { pre.dataset.raw = '// ' + err.message; }
+  pre.dataset.lang = 'js'; paint(pre); b.innerHTML = RUN + 'Run again';
+});
+$$('pre[data-lang]').forEach(paint);
+$$('[data-copy]').forEach(b => b.onclick = () => navigator.clipboard.writeText(b.dataset.copy).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1200); }));
+
+/* stream demo */
+let SES = null;
+$('#srun').onclick = () => {
+  const out = $('#sout');
+  if (SES) { SES.close(); SES = null; $('#srun').innerHTML = RUN + 'Listen'; return; }
+  out.dataset.raw = '// connected, waiting for the next block (up to 60 s when idle)…'; out.dataset.lang = 'js'; paint(out); out.classList.add('live');
+  $('#srun').innerHTML = '<svg viewBox="0 0 16 16" fill="currentColor"><rect x="4" y="4" width="8" height="8" rx="1.5"/></svg>Stop';
+  SES = new EventSource(API + '/stream');
+  SES.onmessage = m => { const {block} = JSON.parse(m.data); out.dataset.raw = `// block ${block.height} · ${block.txs} txs · ${new Date(block.time).toLocaleTimeString()}\n` + JSON.stringify(JSON.parse(m.data), null, 2) ; paint(out); };
+};
+
+/* sidebar + scrollspy */
+const NAV = [
+  ['Overview', [['basics', 'Basics']]],
+  ['REST API', EPS.map(e => [`ep-${e.id}`, e.p.replace('/api', ''), e.m])],
+  ['Realtime', [['stream', '/stream', 'SSE']]],
+  ['Transactions', [['tx-object', 'Transaction object'], ['sign-bytes', 'Sign bytes'], ['sign-js', 'Sign in JavaScript'], ['tx-types', 'Types'], ['names', 'Name prices'], ['errors', 'Errors']]],
+  ['YUKI Connect', [['connect', 'Overview'], ['connect-demo', 'Live demo'], ['connect-start', 'Quick start'], ['connect-sdk', 'SDK reference'], ['connect-proof', 'Log in with a proof'], ['connect-protocol', 'Protocol'], ['bridge', 'Bridge API']]],
+];
+$('#side').innerHTML = NAV.map(([h, l]) => `<h4>${h}</h4>` + l.map(([id, t, m]) => `<a href="#${id}" data-id="${id}">${m ? `<span class="m ${m.toLowerCase()}">${m}</span>` : ''}${esc(t)}</a>`).join('')).join('');
+const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { $$('.side a').forEach(a => a.classList.toggle('on', a.dataset.id === x.target.id)); } }), {rootMargin: '-80px 0px -70% 0px'});
+NAV.flatMap(([, l]) => l).forEach(([id]) => { const el = document.getElementById(id); if (el) io.observe(el); });
+$('#mb').onclick = () => document.body.classList.toggle('nav');
+$('#side').onclick = e => { if (e.target.closest('a')) document.body.classList.remove('nav'); };
+$('#tg').onclick = () => { const t = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'; document.documentElement.dataset.theme = t; try { localStorage.setItem('yc_docs_theme', t); } catch {} drawBtn && drawBtn(); };
+
+/* YUKI Connect live demo */
+const yc = new YukiConnect({manifestUrl: 'https://chain.yukichat.lol/yuki-connect.json', theme: 'auto', storageKey: 'yc-docs'});
+Object.defineProperty(yc.o, 'theme', {get: () => document.documentElement.dataset.theme});
+const nonce = () => 'docs-' + Math.random().toString(36).slice(2, 12);
+const drawBtn = yc.button('#cbtn', {proof: nonce});
+const log = (t, cls = '') => { const d = document.createElement('div'); d.className = cls; d.textContent = t; $('#dlog').prepend(d); };
+async function showAcc(a) {
+  $('#dsend').disabled = $('#dsign').disabled = !a;
+  if (!a) { $('#dst').textContent = 'Not connected'; $('#dacc').innerHTML = '<span>Status</span><b>Connect a wallet first</b>'; return; }
+  $('#dst').textContent = 'Connected to ' + (a.device && a.device.app || 'Yuki Wallet') + (a.device && a.device.platform ? ' · ' + a.device.platform : '');
+  let bal = '…', proof = a.proof ? '…' : 'not requested';
+  $('#dacc').innerHTML = `<span>Address</span><b>${esc(a.address)}</b>${a.name ? `<span>Name</span><b>${esc(a.name)}</b>` : ''}<span>Balance</span><b id="dbal">${bal}</b><span>Proof</span><b id="dpf">${proof}</b>`;
+  fetch(API + '/account/' + a.address).then(r => r.json()).then(j => $('#dbal').textContent = YukiConnect.fromNano(j.balance, 4) + ' YUKI').catch(() => {});
+  if (a.proof) YukiConnect.verifyProof(a).then(ok => { const b = $('#dpf'); b.textContent = ok ? '✓ signature valid for ' + a.proof.domain : '✗ invalid'; b.className = ok ? 'ok-t' : 'bad-t'; });
+}
+yc.onStatusChange(showAcc); showAcc(yc.account);
+$('#dsend').onclick = async () => {
+  try {
+    const to = $('#dto').value.trim() || yc.account.address;
+    const res = await yc.sendTransaction({to, amount: YukiConnect.toNano($('#damt').value || '0'), memo: 'YUKI Connect demo'});
+    log('sent · tx ' + res.hash, 'ok-t'); setTimeout(() => showAcc(yc.account), 6000);
+  } catch (e) { log('payment: ' + e.message, 'bad-t'); }
+};
+$('#dsign').onclick = async () => {
+  try {
+    const s = await yc.signMessage($('#dmsg').value);
+    const ok = await YukiConnect.verifySignedMessage(s);
+    log((ok ? '✓ verified · ' : '✗ bad signature · ') + 'sig ' + s.signature.slice(0, 24) + '…', ok ? 'ok-t' : 'bad-t');
+  } catch (e) { log('sign: ' + e.message, 'bad-t'); }
+};
+</script>
+</body>
+</html>
